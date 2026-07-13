@@ -1,6 +1,6 @@
 {
   "name": "@lowbex/skills",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Agent skills for local workflow — install from GitHub into .cursor/skills",
   "type": "module",
   "bin": {
