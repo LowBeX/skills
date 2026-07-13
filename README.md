@@ -1,6 +1,6 @@
 # @lowbex/skills
 
-Cursor agent skills — install selectively from GitHub into any project.
+Agent skills for Cursor and Claude Code — install selectively from GitHub into any project.
 
 ## Layout
 
@@ -43,18 +43,27 @@ npx github:LowBeX/skills install LowBeX/skills
 
 Flow:
 
-1. Fetches available skills from GitHub
-2. Multi-select picker — pick individual skills, **All** (every skill + `project.template.md`), or mix
-3. Confirmation prompt
-4. Writes selected skills to `.cursor/skills/<name>/`
+1. Pick agent: **Cursor** (`.cursor/skills/`) or **Claude Code** (`.claude/skills/`)
+2. Fetches available skills from GitHub
+3. Multi-select picker — pick individual skills, **All** (every skill + `project.template.md`), or mix
+4. Confirmation prompt
+5. Writes selected skills to the chosen agent directory
 
 Skips files that already exist unless you pass `--force`.
+
+Skip the agent picker:
+
+```bash
+npx @lowbex/skills install --agent claude
+```
 
 ## Init everything
 
 ```bash
-npx github:LowBeX/skills init
+npx @lowbex/skills init
 ```
+
+Installs all skills + project template in one shot.
 
 ## Publish to npm (one-time)
 
@@ -65,14 +74,14 @@ npm login          # create/login as lowbex on npmjs.com first
 npm publish --otp=XXXXXX   # 6-digit code from your authenticator app
 ```
 
-Installs all skills + project template in one shot.
-
 ## Options
 
 | Flag | Description |
 |------|-------------|
+| `--agent cursor\|claude` | Target agent (skip picker) |
 | `--force` | Overwrite existing skills / project.md |
 | `--ref <branch>` | Git ref (default: `main`) |
+| `--local` | Use bundled skills instead of GitHub |
 | `--yes` | Skip confirmation (`init` only) |
 
 ## Auth
@@ -85,7 +94,7 @@ export GITHUB_TOKEN=ghp_...
 
 ## What gets installed
 
-| Source | Destination |
-|--------|-------------|
-| `skills/*` | `.cursor/skills/*` |
-| `templates/project.template.md` | `docs/agents/project.md` |
+| Source | Cursor | Claude Code |
+|--------|--------|-------------|
+| `skills/*` | `.cursor/skills/*` | `.claude/skills/*` |
+| `templates/project.template.md` | `docs/agents/project.md` | `docs/agents/project.md` |
