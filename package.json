@@ -24,7 +24,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lowbex/skills.git"
+    "url": "git+https://github.com/LowBeX/skills.git"
   },
   "dependencies": {
     "@inquirer/prompts": "^7.5.0"

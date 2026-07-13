@@ -14,13 +14,13 @@ import {
 } from "../lib/install.js";
 import { confirmInstall, selectInstallItems } from "../lib/prompts.js";
 
-const DEFAULT_REPO = "lowbex/skills";
+const DEFAULT_REPO = "LowBeX/skills";
 const DEFAULT_REF = "main";
 
 function usage() {
   console.log(`Usage:
-  npx @lowbex/skills install [owner/repo]   Pick skills + optional project template
-  npx @lowbex/skills init [owner/repo]       Install all skills + project template
+  npx github:LowBeX/skills install [owner/repo]   Pick skills + optional project template
+  npx github:LowBeX/skills init [owner/repo]       Install all skills + project template
 
 Options:
   --force    Overwrite existing files
@@ -29,10 +29,10 @@ Options:
   --yes      Skip confirmation (init only; installs everything)
 
 Examples:
-  npx @lowbex/skills install
-  npx @lowbex/skills install lowbex/skills
-  npx @lowbex/skills install --local
-  npx @lowbex/skills init --force
+  npx github:LowBeX/skills install
+  npx github:LowBeX/skills install LowBeX/skills
+  npx github:LowBeX/skills install --local
+  npx github:LowBeX/skills init --force
 `);
 }
 

@@ -26,13 +26,19 @@ skills/
 From any project root:
 
 ```bash
+npx github:LowBeX/skills install
+```
+
+Once published to npm, this also works:
+
+```bash
 npx @lowbex/skills install
 ```
 
 Or point at a specific repo:
 
 ```bash
-npx @lowbex/skills install lowbex/skills
+npx github:LowBeX/skills install LowBeX/skills
 ```
 
 Flow:
@@ -47,7 +53,16 @@ Skips files that already exist unless you pass `--force`.
 ## Init everything
 
 ```bash
-npx @lowbex/skills init
+npx github:LowBeX/skills init
+```
+
+## Publish to npm (one-time)
+
+`npx @lowbex/skills` 404s until the package is on the registry:
+
+```bash
+npm login          # create/login as lowbex on npmjs.com first
+npm publish --access public
 ```
 
 Installs all skills + project template in one shot.
