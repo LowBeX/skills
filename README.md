@@ -62,7 +62,7 @@ npx github:LowBeX/skills init
 
 ```bash
 npm login          # create/login as lowbex on npmjs.com first
-npm publish --access public
+npm publish --otp=XXXXXX   # 6-digit code from your authenticator app
 ```
 
 Installs all skills + project template in one shot.
