@@ -1,0 +1,35 @@
+{
+  "name": "@lowbex/skills",
+  "version": "0.0.1",
+  "description": "Agent skills for local workflow — install from GitHub into .cursor/skills",
+  "type": "module",
+  "bin": {
+    "agent-skills": "./bin/agent-skills.js"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "skills",
+    "templates"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "cursor",
+    "agent-skills",
+    "skills"
+  ],
+  "author": "lowbex",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lowbex/skills.git"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^7.5.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
