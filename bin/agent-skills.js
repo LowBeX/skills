@@ -92,12 +92,24 @@ async function installSkills(cwd, skillNames, args) {
   const results = [];
 
   for (const name of skillNames) {
+    process.stdout.write(`  ${name}: fetching...`);
     const files = await fetchSkill(name, args);
+    process.stdout.write(` writing ${files.length} file${files.length === 1 ? "" : "s"}...`);
     const result = await writeSkill(cwd, name, files, { force: args.force });
+    console.log(result.status === "skipped" ? " skipped (exists)" : " done");
     results.push(result);
   }
 
   return results;
+}
+
+async function installProjectTemplate(cwd, args) {
+  process.stdout.write("  project.md: fetching...");
+  const content = await fetchProjectTemplate(args);
+  process.stdout.write(" writing...");
+  const result = await writeProjectConfig(cwd, content, { force: args.force });
+  console.log(result.status === "skipped" ? " skipped (exists)" : " done");
+  return result;
 }
 
 async function cmdInstall(cwd, args) {
@@ -122,13 +134,12 @@ async function cmdInstall(cwd, args) {
     return;
   }
 
+  console.log("\nInstalling...\n");
+
   const results = await installSkills(cwd, selected, args);
 
   if (includeTemplate) {
-    const content = await fetchProjectTemplate(args);
-    const templateResult = await writeProjectConfig(cwd, content, {
-      force: args.force,
-    });
+    const templateResult = await installProjectTemplate(cwd, args);
     printResults(results, templateResult);
   } else {
     printResults(results);
@@ -166,25 +177,26 @@ async function cmdInit(cwd, args) {
     }
   }
 
+  console.log("\nInstalling...\n");
+
   const results = await installSkills(cwd, available, args);
-  const content = await fetchProjectTemplate(args);
-  const templateResult = await writeProjectConfig(cwd, content, {
-    force: args.force,
-  });
+  const templateResult = await installProjectTemplate(cwd, args);
 
   printResults(results, templateResult);
 }
 
 function printResults(skillResults, templateResult) {
-  console.log("");
+  console.log("\nSummary:");
   for (const r of skillResults) {
     const label = r.status === "skipped" ? "skipped (exists)" : "installed";
-    console.log(`  ${r.skillName}: ${label}`);
+    const dest = r.path ? ` → ${r.path}` : "";
+    console.log(`  ${r.skillName}: ${label}${dest}`);
   }
   if (templateResult) {
     const label =
       templateResult.status === "skipped" ? "skipped (exists)" : "installed";
-    console.log(`  project.md: ${label}`);
+    const dest = templateResult.path ? ` → ${templateResult.path}` : "";
+    console.log(`  project.md: ${label}${dest}`);
   }
   console.log("\nDone.");
 }
