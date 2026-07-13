@@ -12,12 +12,13 @@ skills/
 ├── skills/
 │   ├── wayfinder/
 │   ├── grill-me/
+│   ├── grilling/
+│   ├── grill-with-docs/
+│   ├── domain-modeling/
 │   ├── to-spec/
 │   ├── to-tickets/
 │   ├── implement/
 │   └── code-review/
-├── templates/
-│   └── project.template.md
 └── README.md
 ```
 
@@ -45,7 +46,7 @@ Flow:
 
 1. Pick agent: **Cursor** (`.cursor/skills/`) or **Claude Code** (`.claude/skills/`)
 2. Fetches available skills from GitHub
-3. Multi-select picker — pick individual skills, **All** (every skill + `project.template.md`), or mix
+3. Multi-select picker — pick individual skills or **All**
 4. Confirmation prompt
 5. Writes selected skills to the chosen agent directory
 
@@ -63,7 +64,7 @@ npx @lowbex/skills install --agent claude
 npx @lowbex/skills init
 ```
 
-Installs all skills + project template in one shot.
+Installs all skills in one shot.
 
 ## Publish to npm (one-time)
 
@@ -79,7 +80,7 @@ npm publish --otp=XXXXXX   # 6-digit code from your authenticator app
 | Flag | Description |
 |------|-------------|
 | `--agent cursor\|claude` | Target agent (skip picker) |
-| `--force` | Overwrite existing skills / project.md |
+| `--force` | Overwrite existing skills |
 | `--ref <branch>` | Git ref (default: `main`) |
 | `--local` | Use bundled skills instead of GitHub |
 | `--yes` | Skip confirmation (`init` only) |
@@ -97,4 +98,3 @@ export GITHUB_TOKEN=ghp_...
 | Source | Cursor | Claude Code |
 |--------|--------|-------------|
 | `skills/*` | `.cursor/skills/*` | `.claude/skills/*` |
-| `templates/project.template.md` | `docs/agents/project.md` | `docs/agents/project.md` |

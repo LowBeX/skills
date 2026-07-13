@@ -39,6 +39,21 @@ If a `CONTEXT-MAP.md` exists at the root, the repo has multiple contexts. The ma
 
 Create files lazily — only when you have something to write. If no `CONTEXT.md` exists, create one when the first term is resolved. If no `docs/adr/` exists, create it when the first ADR is needed.
 
+## Where decisions go
+
+Route each resolved item to exactly one home:
+
+| What | Where | When |
+|------|-------|------|
+| **Canonical term** | `CONTEXT.md` → **Language** | A word or concept is pinned |
+| **ADR-worthy decision** | `docs/adr/NNNN-slug.md` | Hard to reverse, surprising without context, and a real trade-off |
+| **Planning rationale** | Waypoint `## Answer` ([wayfinder](../wayfinder/SKILL.md)) | Everything else during wayfinding — reasoning for _this_ question |
+| **Epic-scoped decision** | Epic **Design decisions** | Distilled by `/to-spec` for _this_ build — link ADRs, don't duplicate them |
+
+During a session: terms → **Language** immediately; ADR-worthy → write ADR and note the path in the waypoint answer; the rest stays in the waypoint answer until `/to-spec` distills epic-scoped rows.
+
+Do not put glossary terms or ADR prose into epic **Design decisions**. Do not put implementation commands or test recipes in **Language**.
+
 ## During the session
 
 ### Challenge against the glossary
@@ -59,16 +74,8 @@ When the user states how something works, check whether the code agrees. If you 
 
 ### Update CONTEXT.md inline
 
-When a term is resolved, update `CONTEXT.md` right there. Don't batch these up — capture them as they happen. Use the format in [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md).
-
-`CONTEXT.md` should be totally devoid of implementation details. Do not treat `CONTEXT.md` as a spec, a scratch pad, or a repository for implementation decisions. It is a glossary and nothing else.
+When a term is resolved, update `CONTEXT.md` → **Language** right there. Don't batch these up — capture them as they happen. Use the format in [CONTEXT-FORMAT.md](./CONTEXT-FORMAT.md).
 
 ### Offer ADRs sparingly
 
-Only offer to create an ADR when all three are true:
-
-1. **Hard to reverse** — the cost of changing your mind later is meaningful
-2. **Surprising without context** — a future reader will wonder "why did they do it this way?"
-3. **The result of a real trade-off** — there were genuine alternatives and you picked one for specific reasons
-
-If any of the three is missing, skip the ADR. Use the format in [ADR-FORMAT.md](./ADR-FORMAT.md).
+Only offer to create an ADR when all three criteria in [ADR-FORMAT.md](./ADR-FORMAT.md) are met. If any is missing, skip the ADR.

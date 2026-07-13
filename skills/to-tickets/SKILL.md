@@ -8,19 +8,19 @@ disable-model-invocation: true
 
 Break an epic PRD, plan, or conversation into **tickets** — tracer-bullet vertical slices with explicit build order.
 
-## Project config
+## Repo layout
 
-Read [docs/agents/project.md](../../../docs/agents/project.md) first — ticket ID pattern, ticket layout, epic directory, backlog index, product spec, context file, manual QA doc. Follow **Discovery**: open one **complete existing epic** in the epic directory and match its ticket table columns, per-ticket section headings, and done-when style.
+Discover paths and conventions from the repo — ticket ID pattern, epic directory, backlog index, product spec. Read `CONTEXT.md` (**Language** / **Agent**); see [domain-modeling](../domain-modeling/SKILL.md). Open one **complete existing epic** and match its ticket table columns, per-ticket section headings, and done-when style.
 
 ## Process
 
 ### 1. Gather context
 
-Work from conversation context. If the user passes an epic path, read it fully. If the source is a **wayfinder map**, read `MAP.md` and resolved waypoints too.
+Work from conversation context. If the user passes an epic path, read it fully. If the source is a **wayfinder map**, read `MAP.md`, resolved waypoints, `CONTEXT.md`, and `docs/adr/` when present.
 
 ### 2. Explore the codebase (optional)
 
-If not already explored, grep for partial work. Read the **product spec** and **context file** from project config. Look for prefactor opportunities — "make the change easy, then make the easy change."
+If not already explored, grep for partial work. Read the **product spec** and `CONTEXT.md`. Look for prefactor opportunities — "make the change easy, then make the easy change."
 
 ### 3. Draft vertical slices
 
@@ -51,9 +51,7 @@ Iterate until approved.
 
 ### 5. Publish
 
-Per **ticket layout** from project config:
-
-**`inside-epic`** (default) — update the epic PRD in place:
+Per repo convention (default **`inside-epic`**) — update the epic PRD in place:
 
 1. Ticket table at the top (match existing column format)
 2. **Build order** line listing ticket IDs in dependency order
@@ -62,7 +60,7 @@ Per **ticket layout** from project config:
 5. **Checkpoint** — fill or update when the full test plan is clear
 6. **Backlog index** — epic status + open-work rows for each new ticket
 
-**`separate-files`** — one file per ticket under a directory the user defines in project config; include blocked-by in each file.
+**`separate-files`** — one file per ticket under a directory the user defines; include blocked-by in each file.
 
 Do not mark tickets done or implement anything.
 
@@ -72,9 +70,9 @@ Tell the user to run **`/implement <ticket-id>`** on the first frontier ticket. 
 
 ## Rules
 
-- No GitHub Issues, triage labels, or Matt-style `.scratch/` unless project config says so.
+- No GitHub Issues, triage labels, or Matt-style `.scratch/` unless the user asks for them.
 - Avoid stale file paths in done-when where possible — key files section holds paths.
-- UI tickets: note relevant **manual QA doc** rows to add when project config lists one.
+- UI tickets: note relevant manual QA doc rows when the repo defines one.
 - Prototype snippets: inline in done-when only when they encode a decision.
 
 ## Wide refactor note

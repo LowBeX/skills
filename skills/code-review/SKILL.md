@@ -16,7 +16,7 @@ Both axes run as **parallel sub-agents** (`Task` tool, `generalPurpose`) so they
 
 ### 1. Pin the fixed point
 
-Whatever the user said is the fixed point — a commit SHA, branch name, tag, `main`, `HEAD~5`, etc. If they didn't specify one, read [docs/agents/project.md](../../../docs/agents/project.md) for default diff base, else `main`.
+Whatever the user said is the fixed point — a commit SHA, branch name, tag, `main`, `HEAD~5`, etc. If they didn't specify one, use `main`.
 
 Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, merge-base comparison). Also note commits via `git log <fixed-point>..HEAD --oneline`.
 
@@ -24,11 +24,11 @@ Before going further, confirm the fixed point resolves (`git rev-parse <fixed-po
 
 ### 2. Identify the spec source
 
-Read project config for ticket ID pattern, backlog index, epic directory, product spec.
+Discover ticket ID pattern, backlog index, and epic directory from the repo.
 
 Look for the originating spec, in this order:
 
-1. **Ticket ID in commit messages or branch name** (match **ticket ID pattern** from project config) — read backlog index → linked epic PRD → cited product spec sections.
+1. **Ticket ID in commit messages or branch name** — read backlog index → linked epic PRD → cited product spec sections.
 2. **Path the user passed** as an argument.
 3. **Epic PRD or spec file** under the project's epic directory or `docs/` matching branch name or feature slug.
 4. **GitHub/GitLab issue refs** in commits (`#123`, `Closes #45`, `!67`) — only if `docs/agents/issue-tracker.md` exists; follow its fetch workflow.
@@ -38,8 +38,8 @@ Look for the originating spec, in this order:
 
 Always include when present:
 
-- Project **context file** (path from project config, e.g. `AGENTS.md` or `CLAUDE.md`)
-- **Linter/formatter config** from project config (e.g. `biome.json`, `.eslintrc`) — skip violations tooling already enforces
+- `CONTEXT.md` — **Language** for ubiquitous-language checks on the Spec axis; **Agent** for documented repo conventions (test commands, package layout); see [domain-modeling](../domain-modeling/SKILL.md)
+- **Linter/formatter config** (e.g. `biome.json`, `.eslintrc`) — skip violations tooling already enforces
 - **Scoped rules** (`.cursor/rules/*.mdc` or equivalent)
 
 Also scan for `CODING_STANDARDS.md`, `CONTRIBUTING.md`, or similar.
@@ -60,6 +60,7 @@ Send a **single message** with two `Task` tool calls (`subagent_type: "generalPu
 
 - The diff command and commit list.
 - The epic PRD path and/or fetched contents (include done-when rows for matched ticket IDs).
+- `CONTEXT.md` **Language** when checking terminology against the spec.
 - Brief: "Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong. Quote the spec line for each finding. Under 400 words."
 
 If the spec is missing, skip the Spec sub-agent and note this in the final report.

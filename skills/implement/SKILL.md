@@ -9,11 +9,11 @@ disable-model-invocation: true
 
 # Implement
 
-User-triggered — step 4 in the [canonical pipeline](../../../docs/agents/project.md). Run after `/to-tickets`. Read the spec or tickets first; do not guess scope.
+User-triggered — step 4 in the pipeline: `/wayfinder` or `/grill-me` → `/to-spec` → `/to-tickets` → `/implement` → `/code-review`. Run after `/to-tickets`. Read the spec or tickets first; do not guess scope.
 
-## Project config
+## Repo layout
 
-Read [docs/agents/project.md](../../../docs/agents/project.md) first — ticket ID pattern, ticket layout, epic directory, backlog index, product spec, context file, manual QA doc, context sync rule. If missing, discover from repo layout or ask the user.
+Discover paths and conventions from the repo — ticket IDs, epic directory, backlog index, product spec. Read `CONTEXT.md` (**Agent** for tests, **Language** for vocabulary); see [domain-modeling](../domain-modeling/SKILL.md). Ask the user when ambiguous.
 
 ## Route by input
 
@@ -30,9 +30,9 @@ Read [docs/agents/project.md](../../../docs/agents/project.md) first — ticket 
 3. Read product spec sections cited in the PRD
 4. Grep codebase for existing partial work related to ticket title/keywords
 5. State briefly: ticket ID, done-when criteria, files to touch, blockers (check epic **Build order** / blocked-by)
-6. Implement minimal diff; run relevant tests from the **context file**
+6. Implement minimal diff; run relevant tests from `CONTEXT.md` **Agent**
 7. UI changes: note relevant rows in the **manual QA doc** when configured
-8. On completion: mark ticket done in the **epic PRD** (use the repo's done marker); update **backlog index** if epic status changed; update context file status per the **context sync rule** when configured
+8. On completion: mark ticket done in the **epic PRD** (use the repo's done marker); update **backlog index** if epic status changed; update `CONTEXT.md` **Agent** status when the repo defines a sync convention
 
 Read priority legend and done-marker conventions from the backlog index when present.
 
@@ -40,8 +40,8 @@ Read priority legend and done-marker conventions from the backlog index when pre
 
 - Minimal diff — match existing patterns in touched files.
 - Write tests at pre-agreed seams where they add meaningful coverage; do not TDD boilerplate or one-liner helpers.
-- Run relevant tests from the **context file** during work (single files / package scope).
+- Run relevant tests from `CONTEXT.md` **Agent** during work (single files / package scope).
 
 ## Finish
 
-Run the full test suite for packages you touched, then run **`/code-review`** — read and follow [code-review](../code-review/SKILL.md) against the branch base (project config default, else `main`, unless the user specified otherwise). This is step 5 in the pipeline; always do it before considering the ticket done.
+Run the full test suite for packages you touched, then run **`/code-review`** — read and follow [code-review](../code-review/SKILL.md) against `main` unless the user specified otherwise. This is step 5 in the pipeline; always do it before considering the ticket done.

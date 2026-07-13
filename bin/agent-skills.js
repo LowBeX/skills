@@ -1,17 +1,8 @@
 #!/usr/bin/env node
 
-import { fetchSkillFiles, fetchTemplate, listSkills } from "../lib/github.js";
-import {
-  listLocalSkills,
-  readLocalSkillFiles,
-  readLocalTemplate,
-} from "../lib/local.js";
-import {
-  projectConfigExists,
-  skillExists,
-  writeProjectConfig,
-  writeSkill,
-} from "../lib/install.js";
+import { fetchSkillFiles, listSkills } from "../lib/github.js";
+import { listLocalSkills, readLocalSkillFiles } from "../lib/local.js";
+import { skillExists, writeSkill } from "../lib/install.js";
 import { confirmInstall, selectAgent, selectInstallItems } from "../lib/prompts.js";
 import { resolveAgent } from "../lib/targets.js";
 
@@ -20,8 +11,8 @@ const DEFAULT_REF = "main";
 
 function usage() {
   console.log(`Usage:
-  npx @lowbex/skills install [owner/repo]   Pick agent, skills, optional project template
-  npx @lowbex/skills init [owner/repo]       Install all skills + project template
+  npx @lowbex/skills install [owner/repo]   Pick agent and skills
+  npx @lowbex/skills init [owner/repo]       Install all skills
 
 Options:
   --agent    cursor | claude (skip agent picker)
@@ -91,11 +82,6 @@ async function fetchSkill(skillName, args) {
   return fetchSkillFiles(args.repo, skillName, args.ref);
 }
 
-async function fetchProjectTemplate(args) {
-  if (args.local) return readLocalTemplate();
-  return fetchTemplate(args.repo, args.ref);
-}
-
 async function installSkills(cwd, skillNames, agent, args) {
   const results = [];
 
@@ -115,33 +101,15 @@ async function installSkills(cwd, skillNames, agent, args) {
   return results;
 }
 
-async function installProjectTemplate(cwd, args) {
-  process.stdout.write("  project.md: fetching...");
-  const content = await fetchProjectTemplate(args);
-  process.stdout.write(" writing...");
-  const result = await writeProjectConfig(cwd, content, { force: args.force });
-  console.log(result.status === "skipped" ? " skipped (exists)" : " done");
-  return result;
-}
-
 async function cmdInstall(cwd, args) {
   const agent = await resolveAgentChoice(args);
   const { skills: available, source } = await getAvailableSkills(args);
   const label = source === "local" ? "package" : `${args.repo}@${args.ref}`;
   console.log(`\nFetching skills from ${label}...\n`);
 
-  const templateExists = await projectConfigExists(cwd);
-  const { skills: selected, includeTemplate } = await selectInstallItems(
-    available,
-    { templateExists },
-  );
+  const selected = await selectInstallItems(available);
 
-  const ok = await confirmInstall({
-    agent,
-    skills: selected,
-    includeTemplate,
-    templateExists: templateExists && args.force,
-  });
+  const ok = await confirmInstall({ agent, skills: selected });
 
   if (!ok) {
     console.log("Cancelled.");
@@ -151,13 +119,7 @@ async function cmdInstall(cwd, args) {
   console.log("\nInstalling...\n");
 
   const results = await installSkills(cwd, selected, agent, args);
-
-  if (includeTemplate) {
-    const templateResult = await installProjectTemplate(cwd, args);
-    printResults(results, templateResult);
-  } else {
-    printResults(results);
-  }
+  printResults(results);
 }
 
 async function cmdInit(cwd, args) {
@@ -165,7 +127,6 @@ async function cmdInit(cwd, args) {
   const { skills: available, source } = await getAvailableSkills(args);
   const label = source === "local" ? "package" : `${args.repo}@${args.ref}`;
   console.log(`\nFetching skills from ${label}...\n`);
-  const templateExists = await projectConfigExists(cwd);
 
   if (!args.yes) {
     const existing = [];
@@ -173,21 +134,15 @@ async function cmdInit(cwd, args) {
       if (await skillExists(cwd, name, agent.skillsDir)) existing.push(name);
     }
 
-    if (existing.length || templateExists) {
+    if (existing.length) {
       console.log("Already installed (will skip unless --force):");
       for (const name of existing) {
         console.log(`  • ${agent.skillsDir}/${name}/`);
       }
-      if (templateExists) console.log("  • docs/agents/project.md");
       console.log("");
     }
 
-    const ok = await confirmInstall({
-      agent,
-      skills: available,
-      includeTemplate: true,
-      templateExists: templateExists && args.force,
-    });
+    const ok = await confirmInstall({ agent, skills: available });
 
     if (!ok) {
       console.log("Cancelled.");
@@ -198,23 +153,15 @@ async function cmdInit(cwd, args) {
   console.log("\nInstalling...\n");
 
   const results = await installSkills(cwd, available, agent, args);
-  const templateResult = await installProjectTemplate(cwd, args);
-
-  printResults(results, templateResult);
+  printResults(results);
 }
 
-function printResults(skillResults, templateResult) {
+function printResults(skillResults) {
   console.log("\nSummary:");
   for (const r of skillResults) {
     const label = r.status === "skipped" ? "skipped (exists)" : "installed";
     const dest = r.path ? ` → ${r.path}` : "";
     console.log(`  ${r.skillName}: ${label}${dest}`);
-  }
-  if (templateResult) {
-    const label =
-      templateResult.status === "skipped" ? "skipped (exists)" : "installed";
-    const dest = templateResult.path ? ` → ${templateResult.path}` : "";
-    console.log(`  project.md: ${label}${dest}`);
   }
   console.log("\nDone.");
 }
