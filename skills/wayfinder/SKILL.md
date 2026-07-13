@@ -20,12 +20,12 @@ Read [docs/agents/project.md](../../../docs/agents/project.md) first. If missing
 
 Avoid conflating wayfinding artifacts with the implementation backlog (use **Backlog vocabulary** from project config when set):
 
-| Term | Typical meaning |
-|------|-----------------|
-| **Map** | This skill's planning index (`MAP.md`) |
-| **Waypoint** | One decision unit on the map (a markdown file) |
-| **Epic** | Implementation PRD — written by `/to-spec` in the pipeline |
-| **Ticket** | Implementation backlog unit — **not** a waypoint |
+| Term         | Typical meaning                                            |
+| ------------ | ---------------------------------------------------------- |
+| **Map**      | This skill's planning index (`MAP.md`)                     |
+| **Waypoint** | One decision unit on the map (a markdown file)             |
+| **Epic**     | Implementation PRD — written by `/to-spec` in the pipeline |
+| **Ticket**   | Implementation backlog unit — **not** a waypoint           |
 
 Refer to waypoints and the map **by title**, never by bare numbers.
 
@@ -88,7 +88,7 @@ Load once per session. Open waypoints are **not** listed — scan `waypoints/` f
 
 Type: grilling | research | prototype | task
 Status: open | in_progress | resolved
-Blocked by: 01, 02   <!-- omit if unblocked -->
+Blocked by: 01, 02 <!-- omit if unblocked -->
 
 ## Question
 
@@ -111,8 +111,8 @@ Every waypoint is either **HITL** (human in the loop) or **AFK** (agent-driven).
 
 - **Research** (AFK): Read docs, APIs, or the codebase to surface a fact a decision waits on. Do the reading in this session when the user invokes work-through; do **not** spawn background subagents or branches.
 - **Prototype** (HITL): Cheap rough artifact to react to — outline, stub, or throwaway UI/logic sketch. Link or path in the answer; discard after the decision unless the user keeps it.
-- **Grilling** (HITL): One question at a time via [grill-me](../grill-me/SKILL.md). Default type.
-- **Task** (HITL or AFK): Manual prerequisite before a decision — provisioning, signup, moving data. The one type that *does* rather than decides; it earns its place by unblocking a waypoint. Record what was done and facts later waypoints need.
+- **Grilling** (HITL): One question at a time via [grilling](../grilling/SKILL.md) and [domain-modeling](../domain-modeling/SKILL.md). Default type.
+- **Task** (HITL or AFK): Manual prerequisite before a decision — provisioning, signup, moving data. The one type that _does_ rather than decides; it earns its place by unblocking a waypoint. Record what was done and facts later waypoints need.
 
 Consult the **product spec** from project config when designing.
 
@@ -143,7 +143,7 @@ Do not auto-chain into `/to-spec`, `/to-tickets`, `/implement`, or `/code-review
 
 User invokes with a loose idea.
 
-1. **Name the destination.** Run `/grill-me` to pin what this map is finding its way to. Destination fixes scope — settle it first.
+1. **Name the destination.** Run `/grilling` and `/domain-modeling` to pin what this map is finding its way to. Destination fixes scope — settle it first.
 2. **Map the frontier.** Grill again, **breadth-first**: fan out across the space, surfacing open decisions and first takeable steps. **If no fog** — the way is already clear — skip the map; tell the user to run **`/to-spec`** directly.
 3. **Create** `<map-storage>/<slug>/MAP.md`: Destination, Notes, empty Decisions so far, fog in **Not yet specified**.
 4. **Create waypoints** you can specify now under `waypoints/` — then add `Blocked by` in a second pass (files need numbers before they can reference each other). Unspecified fog stays in **Not yet specified**.
@@ -155,10 +155,10 @@ User invokes with a map path or slug. A waypoint name/path is **optional** — w
 
 1. Load **MAP.md** only — not every waypoint body.
 2. Choose the waypoint. User's choice wins; else first on the frontier. Set `Status: in_progress`.
-3. Resolve it — read related resolved waypoints on demand; follow skills named in **Notes**. Default: `/grill-me`. Use codebase lookup for facts, not grilling.
+3. Resolve it — read related resolved waypoints on demand; follow skills named in **Notes**. Default: `/grilling` and `/domain-modeling`. Use codebase lookup for facts, not grilling.
 4. Record: fill `## Answer`, set `Status: resolved`, append to **Decisions so far** on the map.
 5. Add new waypoints if the answer surfaces them; graduate fog from **Not yet specified**; rule out-of-scope items per above. Update or remove invalidated waypoints.
-6. **Stop.** One waypoint per session unless the user asked for more. If this resolution emptied the frontier, note that the map is done and point the user to [When the map is done](#when-the-map-is-done) — do not start grill-me or implementation in this session.
+6. **Stop.** Stop — charting is one session's work; it hand-resolves nothing.
 
 ## When the map is done
 
